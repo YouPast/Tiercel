@@ -26,7 +26,7 @@
 
 import Foundation
 
-public struct SessionConfiguration {
+public struct TISessionConfiguration {
     // 请求超时时间
     public var timeoutIntervalForRequest: TimeInterval = 60.0
     

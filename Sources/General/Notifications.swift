@@ -26,14 +26,14 @@
 
 import Foundation
 
-public extension DownloadTask {
+public extension TIDownloadTask {
 
     static let runningNotification = Notification.Name(rawValue: "com.Tiercel.notification.name.downloadTask.running")
     static let didCompleteNotification = Notification.Name(rawValue: "com.Tiercel.notification.name.downloadTask.didComplete")
  
 }
 
-public extension SessionManager {
+public extension TISessionManager {
 
     static let runningNotification = Notification.Name(rawValue: "com.Tiercel.notification.name.sessionManager.running")
     static let didCompleteNotification = Notification.Name(rawValue: "com.Tiercel.notification.name.sessionManager.didComplete")
@@ -42,33 +42,33 @@ public extension SessionManager {
 
 extension Notification: TiercelCompatible { }
 extension TiercelWrapper where Base == Notification {
-    public var downloadTask: DownloadTask? {
-        return base.userInfo?[String.downloadTaskKey] as? DownloadTask
+    public var downloadTask: TIDownloadTask? {
+        return base.userInfo?[String.downloadTaskKey] as? TIDownloadTask
     }
     
-    public var sessionManager: SessionManager? {
-        return base.userInfo?[String.sessionManagerKey] as? SessionManager
+    public var sessionManager: TISessionManager? {
+        return base.userInfo?[String.sessionManagerKey] as? TISessionManager
     }
 }
 
 extension Notification {
-    init(name: Notification.Name, downloadTask: DownloadTask) {
+    init(name: Notification.Name, downloadTask: TIDownloadTask) {
         self.init(name: name, object: nil, userInfo: [String.downloadTaskKey: downloadTask])
     }
     
-    init(name: Notification.Name, sessionManager: SessionManager) {
+    init(name: Notification.Name, sessionManager: TISessionManager) {
         self.init(name: name, object: nil, userInfo: [String.sessionManagerKey: sessionManager])
     }
 }
 
 extension NotificationCenter {
 
-    func postNotification(name: Notification.Name, downloadTask: DownloadTask) {
+    func postNotification(name: Notification.Name, downloadTask: TIDownloadTask) {
         let notification = Notification(name: name, downloadTask: downloadTask)
         post(notification)
     }
     
-    func postNotification(name: Notification.Name, sessionManager: SessionManager) {
+    func postNotification(name: Notification.Name, sessionManager: TISessionManager) {
         let notification = Notification(name: name, sessionManager: sessionManager)
         post(notification)
     }

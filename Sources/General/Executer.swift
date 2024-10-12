@@ -26,13 +26,13 @@
 
 import Foundation
 
-public typealias Handler<T> = (T) -> ()
+public typealias TIHandler<T> = (T) -> ()
 
 public class Executer<T> {
     private let onMainQueue: Bool
-    private let handler: Handler<T>?
+    private let handler: TIHandler<T>?
 
-    public init(onMainQueue: Bool = true, handler: Handler<T>?) {
+    public init(onMainQueue: Bool = true, handler: TIHandler<T>?) {
         self.onMainQueue = onMainQueue
         self.handler = handler
     }

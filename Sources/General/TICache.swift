@@ -26,7 +26,7 @@
 
 import Foundation
 
-public class Cache {
+public class TICache {
 
     private let ioQueue: DispatchQueue
     
@@ -44,7 +44,7 @@ public class Cache {
     
     private let encoder = PropertyListEncoder()
     
-    internal weak var manager: SessionManager?
+    internal weak var manager: TISessionManager?
     
     private let decoder = PropertyListDecoder()
     
@@ -70,7 +70,7 @@ public class Cache {
         
         let cacheName = "com.Daniels.Tiercel.Cache.\(identifier)"
         
-        let diskCachePath = Cache.defaultDiskCachePathClosure(cacheName)
+        let diskCachePath = TICache.defaultDiskCachePathClosure(cacheName)
                 
         let path = downloadPath ?? (diskCachePath as NSString).appendingPathComponent("Downloads")
                 
@@ -93,7 +93,7 @@ public class Cache {
 
 
 // MARK: - file
-extension Cache {
+extension TICache {
     internal func createDirectory() {
         
         if !fileManager.fileExists(atPath: downloadPath) {
@@ -168,7 +168,7 @@ extension Cache {
     
     
     
-    public func clearDiskCache(onMainQueue: Bool = true, handler: Handler<Cache>? = nil) {
+    public func clearDiskCache(onMainQueue: Bool = true, handler: TIHandler<TICache>? = nil) {
         ioQueue.async {
             guard self.fileManager.fileExists(atPath: self.downloadPath) else { return }
             do {
@@ -188,15 +188,15 @@ extension Cache {
 
 
 // MARK: - retrieve
-extension Cache {
-    internal func retrieveAllTasks() -> [DownloadTask] {
+extension TICache {
+    internal func retrieveAllTasks() -> [TIDownloadTask] {
         return ioQueue.sync {
             let path = (downloadPath as NSString).appendingPathComponent("\(identifier)_Tasks.plist")
             if fileManager.fileExists(atPath: path) {
                 do {
                     let url = URL(fileURLWithPath: path)
                     let data = try Data(contentsOf: url)
-                    let tasks = try decoder.decode([DownloadTask].self, from: data)
+                    let tasks = try decoder.decode([TIDownloadTask].self, from: data)
                     tasks.forEach { (task) in
                         task.cache = self
                         if task.status == .waiting  {
@@ -206,10 +206,10 @@ extension Cache {
                     return tasks
                 } catch {
                     manager?.log(.error("retrieve all tasks failed", error: TiercelError.cacheError(reason: .cannotRetrieveAllTasks(path: path, error: error))))
-                    return [DownloadTask]()
+                    return [TIDownloadTask]()
                 }
             } else {
-               return  [DownloadTask]()
+               return  [TIDownloadTask]()
             }
         }
     }
@@ -251,8 +251,8 @@ extension Cache {
 
 
 // MARK: - store
-extension Cache {
-    internal func storeTasks(_ tasks: [DownloadTask]) {
+extension TICache {
+    internal func storeTasks(_ tasks: [TIDownloadTask]) {
         debouncer.execute(label: "storeTasks", wallDeadline: .now() + 0.2) {
             var path = (self.downloadPath as NSString).appendingPathComponent("\(self.identifier)_Tasks.plist")
             do {
@@ -328,8 +328,8 @@ extension Cache {
 
 
 // MARK: - remove
-extension Cache {
-    internal func remove(_ task: DownloadTask, completely: Bool) {
+extension TICache {
+    internal func remove(_ task: TIDownloadTask, completely: Bool) {
         removeTmpFile(task.tmpFileName)
         
         if completely {

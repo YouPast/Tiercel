@@ -21,15 +21,15 @@
 		E1EBF4A724E9968900697485 /* Double+TaskInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EBF48D24E9968900697485 /* Double+TaskInfo.swift */; };
 		E1EBF4A824E9968900697485 /* OperationQueue+DispatchQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EBF48E24E9968900697485 /* OperationQueue+DispatchQueue.swift */; };
 		E1EBF4A924E9968900697485 /* URLConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EBF49024E9968900697485 /* URLConvertible.swift */; };
-		E1EBF4AA24E9968900697485 /* DownloadTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EBF49124E9968900697485 /* DownloadTask.swift */; };
-		E1EBF4AB24E9968900697485 /* SessionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EBF49224E9968900697485 /* SessionConfiguration.swift */; };
+		E1EBF4AA24E9968900697485 /* TIDownloadTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EBF49124E9968900697485 /* TIDownloadTask.swift */; };
+		E1EBF4AB24E9968900697485 /* TISessionConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EBF49224E9968900697485 /* TISessionConfiguration.swift */; };
 		E1EBF4AC24E9968900697485 /* Executer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EBF49324E9968900697485 /* Executer.swift */; };
-		E1EBF4AD24E9968900697485 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EBF49424E9968900697485 /* Common.swift */; };
+		E1EBF4AD24E9968900697485 /* TICommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EBF49424E9968900697485 /* TICommon.swift */; };
 		E1EBF4AE24E9968900697485 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EBF49524E9968900697485 /* Notifications.swift */; };
-		E1EBF4B024E9968900697485 /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EBF49724E9968900697485 /* Cache.swift */; };
+		E1EBF4B024E9968900697485 /* TICache.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EBF49724E9968900697485 /* TICache.swift */; };
 		E1EBF4B124E9968900697485 /* TiercelError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EBF49824E9968900697485 /* TiercelError.swift */; };
-		E1EBF4B224E9968900697485 /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EBF49924E9968900697485 /* SessionManager.swift */; };
-		E1EBF4B324E9968900697485 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EBF49A24E9968900697485 /* Task.swift */; };
+		E1EBF4B224E9968900697485 /* TISessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EBF49924E9968900697485 /* TISessionManager.swift */; };
+		E1EBF4B324E9968900697485 /* TITask.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EBF49A24E9968900697485 /* TITask.swift */; };
 		E1EBF4B424E9968900697485 /* SessionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EBF49B24E9968900697485 /* SessionDelegate.swift */; };
 		E1EBF4B524E9968900697485 /* ResumeDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EBF49D24E9968900697485 /* ResumeDataHelper.swift */; };
 		E1EBF4B624E9968900697485 /* FileChecksumHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1EBF49E24E9968900697485 /* FileChecksumHelper.swift */; };
@@ -64,15 +64,15 @@
 		E1EBF48D24E9968900697485 /* Double+TaskInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Double+TaskInfo.swift"; sourceTree = "<group>"; };
 		E1EBF48E24E9968900697485 /* OperationQueue+DispatchQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OperationQueue+DispatchQueue.swift"; sourceTree = "<group>"; };
 		E1EBF49024E9968900697485 /* URLConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLConvertible.swift; sourceTree = "<group>"; };
-		E1EBF49124E9968900697485 /* DownloadTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadTask.swift; sourceTree = "<group>"; };
-		E1EBF49224E9968900697485 /* SessionConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionConfiguration.swift; sourceTree = "<group>"; };
+		E1EBF49124E9968900697485 /* TIDownloadTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TIDownloadTask.swift; sourceTree = "<group>"; };
+		E1EBF49224E9968900697485 /* TISessionConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TISessionConfiguration.swift; sourceTree = "<group>"; };
 		E1EBF49324E9968900697485 /* Executer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Executer.swift; sourceTree = "<group>"; };
-		E1EBF49424E9968900697485 /* Common.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
+		E1EBF49424E9968900697485 /* TICommon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TICommon.swift; sourceTree = "<group>"; };
 		E1EBF49524E9968900697485 /* Notifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
-		E1EBF49724E9968900697485 /* Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
+		E1EBF49724E9968900697485 /* TICache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TICache.swift; sourceTree = "<group>"; };
 		E1EBF49824E9968900697485 /* TiercelError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TiercelError.swift; sourceTree = "<group>"; };
-		E1EBF49924E9968900697485 /* SessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; };
-		E1EBF49A24E9968900697485 /* Task.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
+		E1EBF49924E9968900697485 /* TISessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TISessionManager.swift; sourceTree = "<group>"; };
+		E1EBF49A24E9968900697485 /* TITask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TITask.swift; sourceTree = "<group>"; };
 		E1EBF49B24E9968900697485 /* SessionDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionDelegate.swift; sourceTree = "<group>"; };
 		E1EBF49D24E9968900697485 /* ResumeDataHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResumeDataHelper.swift; sourceTree = "<group>"; };
 		E1EBF49E24E9968900697485 /* FileChecksumHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileChecksumHelper.swift; sourceTree = "<group>"; };
@@ -157,13 +157,13 @@
 		E1EBF48F24E9968900697485 /* General */ = {
 			isa = PBXGroup;
 			children = (
-				E1EBF49424E9968900697485 /* Common.swift */,
+				E1EBF49424E9968900697485 /* TICommon.swift */,
 				E1EBF49324E9968900697485 /* Executer.swift */,
-				E1EBF49724E9968900697485 /* Cache.swift */,
-				E1EBF49A24E9968900697485 /* Task.swift */,
-				E1EBF49124E9968900697485 /* DownloadTask.swift */,
-				E1EBF49224E9968900697485 /* SessionConfiguration.swift */,
-				E1EBF49924E9968900697485 /* SessionManager.swift */,
+				E1EBF49724E9968900697485 /* TICache.swift */,
+				E1EBF49A24E9968900697485 /* TITask.swift */,
+				E1EBF49124E9968900697485 /* TIDownloadTask.swift */,
+				E1EBF49224E9968900697485 /* TISessionConfiguration.swift */,
+				E1EBF49924E9968900697485 /* TISessionManager.swift */,
 				E1EBF49B24E9968900697485 /* SessionDelegate.swift */,
 				E1EBF49024E9968900697485 /* URLConvertible.swift */,
 				E1EBF49824E9968900697485 /* TiercelError.swift */,
@@ -296,23 +296,23 @@
 				E1EBF4A924E9968900697485 /* URLConvertible.swift in Sources */,
 				E1EBF4A624E9968900697485 /* String+Hash.swift in Sources */,
 				E1EBF4B124E9968900697485 /* TiercelError.swift in Sources */,
-				E1EBF4AA24E9968900697485 /* DownloadTask.swift in Sources */,
+				E1EBF4AA24E9968900697485 /* TIDownloadTask.swift in Sources */,
 				E1EBF4A524E9968900697485 /* DispatchQueue+Safe.swift in Sources */,
 				E1EBF4A324E9968900697485 /* Array+Safe.swift in Sources */,
 				E1EBF4A824E9968900697485 /* OperationQueue+DispatchQueue.swift in Sources */,
 				E1EBF4AE24E9968900697485 /* Notifications.swift in Sources */,
 				E1EBF4A024E9968900697485 /* CodingUserInfoKey+Cache.swift in Sources */,
-				E1EBF4B024E9968900697485 /* Cache.swift in Sources */,
+				E1EBF4B024E9968900697485 /* TICache.swift in Sources */,
 				E1FE924826E905E200FA3B2E /* Protected.swift in Sources */,
 				E1EBF4A124E9968900697485 /* Int64+TaskInfo.swift in Sources */,
 				E1EBF4AC24E9968900697485 /* Executer.swift in Sources */,
 				E1EBF4B624E9968900697485 /* FileChecksumHelper.swift in Sources */,
 				E1EBF4A724E9968900697485 /* Double+TaskInfo.swift in Sources */,
 				E1EBF4B524E9968900697485 /* ResumeDataHelper.swift in Sources */,
-				E1EBF4AB24E9968900697485 /* SessionConfiguration.swift in Sources */,
-				E1EBF4AD24E9968900697485 /* Common.swift in Sources */,
-				E1EBF4B224E9968900697485 /* SessionManager.swift in Sources */,
-				E1EBF4B324E9968900697485 /* Task.swift in Sources */,
+				E1EBF4AB24E9968900697485 /* TISessionConfiguration.swift in Sources */,
+				E1EBF4AD24E9968900697485 /* TICommon.swift in Sources */,
+				E1EBF4B224E9968900697485 /* TISessionManager.swift in Sources */,
+				E1EBF4B324E9968900697485 /* TITask.swift in Sources */,
 				E1EBF4A224E9968900697485 /* URLSession+ResumeData.swift in Sources */,
 				E1EBF4B424E9968900697485 /* SessionDelegate.swift in Sources */,
 			);

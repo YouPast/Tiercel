@@ -26,25 +26,25 @@
 
 import UIKit
 
-public class SessionManager {
+public class TISessionManager {
     
     enum MaintainTasksAction {
-        case append(DownloadTask)
-        case remove(DownloadTask)
-        case succeeded(DownloadTask)
-        case appendRunningTasks(DownloadTask)
-        case removeRunningTasks(DownloadTask)
+        case append(TIDownloadTask)
+        case remove(TIDownloadTask)
+        case succeeded(TIDownloadTask)
+        case appendRunningTasks(TIDownloadTask)
+        case removeRunningTasks(TIDownloadTask)
     }
 
     public let operationQueue: DispatchQueue
     
-    public let cache: Cache
+    public let cache: TICache
     
     public let identifier: String
     
     public var completionHandler: (() -> Void)?
 
-    public var configuration: SessionConfiguration {
+    public var configuration: TISessionConfiguration {
         get { protectedState.wrappedValue.configuration }
         set {
             operationQueue.sync {
@@ -61,7 +61,7 @@ public class SessionManager {
     private struct State {
         var logger: Logable
         var isControlNetworkActivityIndicator: Bool = true
-        var configuration: SessionConfiguration {
+        var configuration: TISessionConfiguration {
             didSet {
                 guard !shouldCreatSession else { return }
                 shouldCreatSession = true
@@ -80,21 +80,21 @@ public class SessionManager {
         var session: URLSession?
         var shouldCreatSession: Bool = false
         var timer: DispatchSourceTimer?
-        var status: Status = .waiting
-        var tasks: [DownloadTask] = []
-        var taskMapper: [String: DownloadTask] = [String: DownloadTask]()
+        var status: TIStatus = .waiting
+        var tasks: [TIDownloadTask] = []
+        var taskMapper: [String: TIDownloadTask] = [String: TIDownloadTask]()
         var urlMapper: [URL: URL] = [URL: URL]()
-        var runningTasks: [DownloadTask] = []
-        var restartTasks: [DownloadTask] = []
-        var succeededTasks: [DownloadTask] = []
+        var runningTasks: [TIDownloadTask] = []
+        var restartTasks: [TIDownloadTask] = []
+        var succeededTasks: [TIDownloadTask] = []
         var speed: Int64 = 0
         var timeRemaining: Int64 = 0
         
-        var progressExecuter: Executer<SessionManager>?
-        var successExecuter: Executer<SessionManager>?
-        var failureExecuter: Executer<SessionManager>?
-        var completionExecuter: Executer<SessionManager>?
-        var controlExecuter: Executer<SessionManager>?
+        var progressExecuter: Executer<TISessionManager>?
+        var successExecuter: Executer<TISessionManager>?
+        var failureExecuter: Executer<TISessionManager>?
+        var completionExecuter: Executer<TISessionManager>?
+        var controlExecuter: Executer<TISessionManager>?
     }
     
     
@@ -132,7 +132,7 @@ public class SessionManager {
     }
 
     
-    public private(set) var status: Status {
+    public private(set) var status: TIStatus {
         get { protectedState.wrappedValue.status }
         set {
             protectedState.write { $0.status = newValue }
@@ -144,22 +144,22 @@ public class SessionManager {
     }
     
     
-    public private(set) var tasks: [DownloadTask] {
+    public private(set) var tasks: [TIDownloadTask] {
         get { protectedState.wrappedValue.tasks }
         set { protectedState.write { $0.tasks = newValue } }
     }
     
-    private var runningTasks: [DownloadTask] {
+    private var runningTasks: [TIDownloadTask] {
         get { protectedState.wrappedValue.runningTasks }
         set { protectedState.write { $0.runningTasks = newValue } }
     }
     
-    private var restartTasks: [DownloadTask] {
+    private var restartTasks: [TIDownloadTask] {
         get { protectedState.wrappedValue.restartTasks }
         set { protectedState.write { $0.restartTasks = newValue } }
     }
 
-    public private(set) var succeededTasks: [DownloadTask] {
+    public private(set) var succeededTasks: [TIDownloadTask] {
         get { protectedState.wrappedValue.succeededTasks }
         set { protectedState.write { $0.succeededTasks = newValue } }
     }
@@ -190,27 +190,27 @@ public class SessionManager {
         timeRemaining.tr.convertTimeToString()
     }
     
-    private var progressExecuter: Executer<SessionManager>? {
+    private var progressExecuter: Executer<TISessionManager>? {
         get { protectedState.wrappedValue.progressExecuter }
         set { protectedState.write { $0.progressExecuter = newValue } }
     }
     
-    private var successExecuter: Executer<SessionManager>? {
+    private var successExecuter: Executer<TISessionManager>? {
         get { protectedState.wrappedValue.successExecuter }
         set { protectedState.write { $0.successExecuter = newValue } }
     }
     
-    private var failureExecuter: Executer<SessionManager>? {
+    private var failureExecuter: Executer<TISessionManager>? {
         get { protectedState.wrappedValue.failureExecuter }
         set { protectedState.write { $0.failureExecuter = newValue } }
     }
     
-    private var completionExecuter: Executer<SessionManager>? {
+    private var completionExecuter: Executer<TISessionManager>? {
         get { protectedState.wrappedValue.completionExecuter }
         set { protectedState.write { $0.completionExecuter = newValue } }
     }
     
-    private var controlExecuter: Executer<SessionManager>? {
+    private var controlExecuter: Executer<TISessionManager>? {
         get { protectedState.wrappedValue.controlExecuter }
         set { protectedState.write { $0.controlExecuter = newValue } }
     }
@@ -218,19 +218,19 @@ public class SessionManager {
     
     
     public init(_ identifier: String,
-                configuration: SessionConfiguration,
+                configuration: TISessionConfiguration,
                 logger: Logable? = nil,
-                cache: Cache? = nil,
+                cache: TICache? = nil,
                 operationQueue: DispatchQueue = DispatchQueue(label: "com.Tiercel.SessionManager.operationQueue",
                                                               autoreleaseFrequency: .workItem)) {
         let bundleIdentifier = Bundle.main.bundleIdentifier ?? "com.Daniels.Tiercel"
         self.identifier = "\(bundleIdentifier).\(identifier)"
         protectedState = Protected(
-            State(logger: logger ?? Logger(identifier: "\(bundleIdentifier).\(identifier)", option: .default),
+            State(logger: logger ?? TILogger(identifier: "\(bundleIdentifier).\(identifier)", option: .default),
                   configuration: configuration)
         )
         self.operationQueue = operationQueue
-        self.cache = cache ?? Cache(identifier)
+        self.cache = cache ?? TICache(identifier)
         self.cache.manager = self
         self.cache.retrieveAllTasks().forEach { maintainTasks(with: .append($0)) }
         succeededTasks = tasks.filter { $0.status == .succeeded }
@@ -290,7 +290,7 @@ public class SessionManager {
 
 
 // MARK: - download
-extension SessionManager {
+extension TISessionManager {
     
     
     /// 开启一个下载任务
@@ -305,16 +305,16 @@ extension SessionManager {
                          headers: [String: String]? = nil,
                          fileName: String? = nil,
                          onMainQueue: Bool = true,
-                         handler: Handler<DownloadTask>? = nil) -> DownloadTask? {
+                         handler: TIHandler<TIDownloadTask>? = nil) -> TIDownloadTask? {
         do {
             let validURL = try url.asURL()
-            var task: DownloadTask!
+            var task: TIDownloadTask!
             operationQueue.sync {
                 task = fetchTask(validURL)
                 if let task = task {
                     task.update(headers, newFileName: fileName)
                 } else {
-                    task = DownloadTask(validURL,
+                    task = TIDownloadTask(validURL,
                                         headers: headers,
                                         fileName: fileName,
                                         cache: cache,
@@ -347,21 +347,21 @@ extension SessionManager {
                               headersArray: [[String: String]]? = nil,
                               fileNames: [String]? = nil,
                               onMainQueue: Bool = true,
-                              handler: Handler<SessionManager>? = nil) -> [DownloadTask] {
+                              handler: TIHandler<TISessionManager>? = nil) -> [TIDownloadTask] {
         if let headersArray = headersArray,
             headersArray.count != 0 && headersArray.count != urls.count {
             log(.error("create multiple dowloadTasks failed", error: TiercelError.headersMatchFailed))
-            return [DownloadTask]()
+            return [TIDownloadTask]()
         }
         
         if let fileNames = fileNames,
             fileNames.count != 0 && fileNames.count != urls.count {
             log(.error("create multiple dowloadTasks failed", error: TiercelError.fileNamesMatchFailed))
-            return [DownloadTask]()
+            return [TIDownloadTask]()
         }
 
         var urlSet = Set<URL>()
-        var uniqueTasks = [DownloadTask]()
+        var uniqueTasks = [TIDownloadTask]()
 
         operationQueue.sync {
             for (index, url) in urls.enumerated() {
@@ -377,12 +377,12 @@ extension SessionManager {
                     continue
                 }
 
-                var task: DownloadTask!
+                var task: TIDownloadTask!
                 task = fetchTask(validURL)
                 if let task = task {
                     task.update(headers, newFileName: fileName)
                 } else {
-                    task = DownloadTask(validURL,
+                    task = TIDownloadTask(validURL,
                                         headers: headers,
                                         fileName: fileName,
                                         cache: cache,
@@ -408,9 +408,9 @@ extension SessionManager {
 }
 
 // MARK: - single task control
-extension SessionManager {
+extension TISessionManager {
     
-    public func fetchTask(_ url: URLConvertible) -> DownloadTask? {
+    public func fetchTask(_ url: URLConvertible) -> TIDownloadTask? {
         do {
             let validURL = try url.asURL()
             return protectedState.read { $0.taskMapper[validURL.absoluteString] }
@@ -420,7 +420,7 @@ extension SessionManager {
         }
     }
     
-    internal func mapTask(_ currentURL: URL) -> DownloadTask? {
+    internal func mapTask(_ currentURL: URL) -> TIDownloadTask? {
         protectedState.read {
             let url = $0.urlMapper[currentURL] ?? currentURL
             return $0.taskMapper[url.absoluteString]
@@ -432,13 +432,13 @@ extension SessionManager {
     /// 开启任务
     /// 会检查存放下载完成的文件中是否存在跟fileName一样的文件
     /// 如果存在则不会开启下载，直接调用task的successHandler
-    public func start(_ url: URLConvertible, onMainQueue: Bool = true, handler: Handler<DownloadTask>? = nil) {
+    public func start(_ url: URLConvertible, onMainQueue: Bool = true, handler: TIHandler<TIDownloadTask>? = nil) {
         operationQueue.async {
             self._start(url, onMainQueue: onMainQueue, handler: handler)
         }
     }
     
-    public func start(_ task: DownloadTask, onMainQueue: Bool = true, handler: Handler<DownloadTask>? = nil) {
+    public func start(_ task: TIDownloadTask, onMainQueue: Bool = true, handler: TIHandler<TIDownloadTask>? = nil) {
         operationQueue.async {
             guard let _ = self.fetchTask(task.url) else {
                 self.log(.error("can't start downloadTask", error: TiercelError.fetchDownloadTaskFailed(url: task.url)))
@@ -448,7 +448,7 @@ extension SessionManager {
         }
     }
     
-    private func _start(_ url: URLConvertible, onMainQueue: Bool = true, handler: Handler<DownloadTask>? = nil) {
+    private func _start(_ url: URLConvertible, onMainQueue: Bool = true, handler: TIHandler<TIDownloadTask>? = nil) {
         guard let task = self.fetchTask(url) else {
             log(.error("can't start downloadTask", error: TiercelError.fetchDownloadTaskFailed(url: url)))
             return
@@ -456,7 +456,7 @@ extension SessionManager {
         _start(task, onMainQueue: onMainQueue, handler: handler)
     }
     
-    private func _start(_ task: DownloadTask, onMainQueue: Bool = true, handler: Handler<DownloadTask>? = nil) {
+    private func _start(_ task: TIDownloadTask, onMainQueue: Bool = true, handler: TIHandler<TIDownloadTask>? = nil) {
         task.controlExecuter = Executer(onMainQueue: onMainQueue, handler: handler)
         didStart()
         if !shouldCreatSession {
@@ -471,7 +471,7 @@ extension SessionManager {
 
     
     /// 暂停任务，会触发sessionDelegate的完成回调
-    public func suspend(_ url: URLConvertible, onMainQueue: Bool = true, handler: Handler<DownloadTask>? = nil) {
+    public func suspend(_ url: URLConvertible, onMainQueue: Bool = true, handler: TIHandler<TIDownloadTask>? = nil) {
         operationQueue.async {
             guard let task = self.fetchTask(url) else {
                 self.log(.error("can't suspend downloadTask", error: TiercelError.fetchDownloadTaskFailed(url: url)))
@@ -481,7 +481,7 @@ extension SessionManager {
         }
     }
     
-    public func suspend(_ task: DownloadTask, onMainQueue: Bool = true, handler: Handler<DownloadTask>? = nil) {
+    public func suspend(_ task: TIDownloadTask, onMainQueue: Bool = true, handler: TIHandler<TIDownloadTask>? = nil) {
         operationQueue.async {
             guard let _ = self.fetchTask(task.url) else {
                 self.log(.error("can't suspend downloadTask", error: TiercelError.fetchDownloadTaskFailed(url: task.url)))
@@ -496,7 +496,7 @@ extension SessionManager {
     /// 其他状态的任务都可以被取消，被取消的任务会被移除
     /// 会删除还没有下载完成的缓存文件
     /// 会触发sessionDelegate的完成回调
-    public func cancel(_ url: URLConvertible, onMainQueue: Bool = true, handler: Handler<DownloadTask>? = nil) {
+    public func cancel(_ url: URLConvertible, onMainQueue: Bool = true, handler: TIHandler<TIDownloadTask>? = nil) {
         operationQueue.async {
             guard let task = self.fetchTask(url) else {
                 self.log(.error("can't cancel downloadTask", error: TiercelError.fetchDownloadTaskFailed(url: url)))
@@ -506,7 +506,7 @@ extension SessionManager {
         }
     }
     
-    public func cancel(_ task: DownloadTask, onMainQueue: Bool = true, handler: Handler<DownloadTask>? = nil) {
+    public func cancel(_ task: TIDownloadTask, onMainQueue: Bool = true, handler: TIHandler<TIDownloadTask>? = nil) {
         operationQueue.async {
             guard let _ = self.fetchTask(task.url) else {
                 self.log(.error("can't cancel downloadTask", error: TiercelError.fetchDownloadTaskFailed(url: task.url)))
@@ -526,7 +526,7 @@ extension SessionManager {
     /// - Parameters:
     ///   - url: URLConvertible
     ///   - completely: 是否删除下载完成的文件
-    public func remove(_ url: URLConvertible, completely: Bool = false, onMainQueue: Bool = true, handler: Handler<DownloadTask>? = nil) {
+    public func remove(_ url: URLConvertible, completely: Bool = false, onMainQueue: Bool = true, handler: TIHandler<TIDownloadTask>? = nil) {
         operationQueue.async {
             guard let task = self.fetchTask(url) else {
                 self.log(.error("can't remove downloadTask", error: TiercelError.fetchDownloadTaskFailed(url: url)))
@@ -536,7 +536,7 @@ extension SessionManager {
         }
     }
     
-    public func remove(_ task: DownloadTask, completely: Bool = false, onMainQueue: Bool = true, handler: Handler<DownloadTask>? = nil) {
+    public func remove(_ task: TIDownloadTask, completely: Bool = false, onMainQueue: Bool = true, handler: TIHandler<TIDownloadTask>? = nil) {
         operationQueue.async {
             guard let _ = self.fetchTask(task.url) else {
                 self.log(.error("can't remove downloadTask", error: TiercelError.fetchDownloadTaskFailed(url: task.url)))
@@ -568,9 +568,9 @@ extension SessionManager {
 }
 
 // MARK: - total tasks control
-extension SessionManager {
+extension TISessionManager {
     
-    public func totalStart(onMainQueue: Bool = true, handler: Handler<SessionManager>? = nil) {
+    public func totalStart(onMainQueue: Bool = true, handler: TIHandler<TISessionManager>? = nil) {
         operationQueue.async {
             self.tasks.forEach { task in
                 if task.status != .succeeded {
@@ -581,7 +581,7 @@ extension SessionManager {
         }
     }
     
-    public func totalSuspend(onMainQueue: Bool = true, handler: Handler<SessionManager>? = nil) {
+    public func totalSuspend(onMainQueue: Bool = true, handler: TIHandler<TISessionManager>? = nil) {
         operationQueue.async {
             guard self.status == .running || self.status == .waiting else { return }
             self.status = .willSuspend
@@ -590,7 +590,7 @@ extension SessionManager {
         }
     }
     
-    public func totalCancel(onMainQueue: Bool = true, handler: Handler<SessionManager>? = nil) {
+    public func totalCancel(onMainQueue: Bool = true, handler: TIHandler<TISessionManager>? = nil) {
         operationQueue.async {
             guard self.status != .succeeded && self.status != .canceled else { return }
             self.status = .willCancel
@@ -599,7 +599,7 @@ extension SessionManager {
         }
     }
     
-    public func totalRemove(completely: Bool = false, onMainQueue: Bool = true, handler: Handler<SessionManager>? = nil) {
+    public func totalRemove(completely: Bool = false, onMainQueue: Bool = true, handler: TIHandler<TISessionManager>? = nil) {
         operationQueue.async {
             guard self.status != .removed else { return }
             self.status = .willRemove
@@ -608,7 +608,7 @@ extension SessionManager {
         }
     }
     
-    public func tasksSort(by areInIncreasingOrder: (DownloadTask, DownloadTask) throws -> Bool) rethrows {
+    public func tasksSort(by areInIncreasingOrder: (TIDownloadTask, TIDownloadTask) throws -> Bool) rethrows {
         try operationQueue.sync {
             try protectedState.write {
                 try $0.tasks.sort(by: areInIncreasingOrder)
@@ -619,7 +619,7 @@ extension SessionManager {
 
 
 // MARK: - status handle
-extension SessionManager {
+extension TISessionManager {
 
     internal func maintainTasks(with action: MaintainTasksAction) {
 
@@ -673,7 +673,7 @@ extension SessionManager {
         }
     }
 
-    internal func updateUrlMapper(with task: DownloadTask) {
+    internal func updateUrlMapper(with task: TIDownloadTask) {
         protectedState.write { $0.urlMapper[task.currentURL] = task.url }
     }
     
@@ -755,10 +755,10 @@ extension SessionManager {
 #endif
         }
         progressExecuter?.execute(self)
-        NotificationCenter.default.postNotification(name: SessionManager.runningNotification, sessionManager: self)
+        NotificationCenter.default.postNotification(name: TISessionManager.runningNotification, sessionManager: self)
     }
     
-    internal func didCancelOrRemove(_ task: DownloadTask) {
+    internal func didCancelOrRemove(_ task: TIDownloadTask) {
         maintainTasks(with: .remove(task))
         
         // 处理使用单个任务操作移除最后一个task时，manager状态
@@ -872,7 +872,7 @@ extension SessionManager {
 }
 
 // MARK: - info
-extension SessionManager {
+extension TISessionManager {
 
     static let refreshInterval: Double = 1
 
@@ -925,15 +925,15 @@ extension SessionManager {
 }
 
 // MARK: - closure
-extension SessionManager {
+extension TISessionManager {
     @discardableResult
-    public func progress(onMainQueue: Bool = true, handler: @escaping Handler<SessionManager>) -> Self {
+    public func progress(onMainQueue: Bool = true, handler: @escaping TIHandler<TISessionManager>) -> Self {
         progressExecuter = Executer(onMainQueue: onMainQueue, handler: handler)
         return self
     }
     
     @discardableResult
-    public func success(onMainQueue: Bool = true, handler: @escaping Handler<SessionManager>) -> Self {
+    public func success(onMainQueue: Bool = true, handler: @escaping TIHandler<TISessionManager>) -> Self {
         successExecuter = Executer(onMainQueue: onMainQueue, handler: handler)
         if status == .succeeded  && completionExecuter == nil{
             operationQueue.async {
@@ -944,7 +944,7 @@ extension SessionManager {
     }
     
     @discardableResult
-    public func failure(onMainQueue: Bool = true, handler: @escaping Handler<SessionManager>) -> Self {
+    public func failure(onMainQueue: Bool = true, handler: @escaping TIHandler<TISessionManager>) -> Self {
         failureExecuter = Executer(onMainQueue: onMainQueue, handler: handler)
         if completionExecuter == nil &&
             (status == .suspended ||
@@ -959,7 +959,7 @@ extension SessionManager {
     }
     
     @discardableResult
-    public func completion(onMainQueue: Bool = true, handler: @escaping Handler<SessionManager>) -> Self {
+    public func completion(onMainQueue: Bool = true, handler: @escaping TIHandler<TISessionManager>) -> Self {
         completionExecuter = Executer(onMainQueue: onMainQueue, handler: handler)
         if status == .suspended ||
             status == .canceled ||
@@ -981,7 +981,7 @@ extension SessionManager {
         } else {
             failureExecuter?.execute(self)
         }
-        NotificationCenter.default.postNotification(name: SessionManager.didCompleteNotification, sessionManager: self)
+        NotificationCenter.default.postNotification(name: TISessionManager.didCompleteNotification, sessionManager: self)
     }
     
     private func executeControl() {
@@ -992,7 +992,7 @@ extension SessionManager {
 
 
 // MARK: - call back
-extension SessionManager {
+extension TISessionManager {
     internal func didBecomeInvalidation(withError error: Error?) {
         createSession { [weak self] in
             guard let self = self else { return }

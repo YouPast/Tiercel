@@ -26,7 +26,7 @@
 
 import Foundation
 
-extension Task {
+extension TITask {
     public enum Validation: Int {
         case unkown
         case correct
@@ -34,7 +34,7 @@ extension Task {
     }
 }
 
-public class Task<TaskType>: NSObject, Codable {
+public class TITask<TaskType>: NSObject, Codable {
     
     private enum CodingKeys: CodingKey {
         case url
@@ -63,9 +63,9 @@ public class Task<TaskType>: NSObject, Codable {
         case statusCode(_ statusCode: Int)
     }
 
-    public internal(set) weak var manager: SessionManager?
+    public internal(set) weak var manager: TISessionManager?
 
-    internal var cache: Cache
+    internal var cache: TICache
 
     internal var operationQueue: DispatchQueue
 
@@ -79,7 +79,7 @@ public class Task<TaskType>: NSObject, Codable {
         var verificationCode: String?
         var verificationType: FileChecksumHelper.VerificationType = .md5
         var isRemoveCompletely: Bool = false
-        var status: Status = .waiting
+        var status: TIStatus = .waiting
         var validation: Validation = .unkown
         var currentURL: URL
         var startDate: Double = 0
@@ -125,15 +125,15 @@ public class Task<TaskType>: NSObject, Codable {
         set { protectedState.write { $0.isRemoveCompletely = newValue } }
     }
 
-    public internal(set) var status: Status {
+    public internal(set) var status: TIStatus {
         get { protectedState.wrappedValue.status }
         set {
             protectedState.write { $0.status = newValue }
             if newValue == .willSuspend || newValue == .willCancel || newValue == .willRemove {
                 return
             }
-            if self is DownloadTask {
-                manager?.log(.downloadTask(newValue.rawValue, task: self as! DownloadTask))
+            if self is TIDownloadTask {
+                manager?.log(.downloadTask(newValue.rawValue, task: self as! TIDownloadTask))
             }
         }
     }
@@ -232,7 +232,7 @@ public class Task<TaskType>: NSObject, Codable {
 
     internal init(_ url: URL,
                   headers: [String: String]? = nil,
-                  cache: Cache,
+                  cache: TICache,
                   operationQueue:DispatchQueue) {
         self.cache = cache
         self.url = url
@@ -273,7 +273,7 @@ public class Task<TaskType>: NSObject, Codable {
         let currentURL = try container.decode(URL.self, forKey: .currentURL)
         let fileName = try container.decode(String.self, forKey: .fileName)
         protectedState = Protected(State(currentURL: currentURL, fileName: fileName))
-        cache = decoder.userInfo[.cache] as? Cache ?? Cache("default")
+        cache = decoder.userInfo[.cache] as? TICache ?? TICache("default")
         operationQueue = decoder.userInfo[.operationQueue] as? DispatchQueue ?? DispatchQueue(label: "com.Tiercel.SessionManager.operationQueue")
         super.init()
 
@@ -289,7 +289,7 @@ public class Task<TaskType>: NSObject, Codable {
             $0.startDate = try container.decode(Double.self, forKey: .startDate)
             $0.endDate = try container.decode(Double.self, forKey: .endDate)
             $0.verificationCode = try container.decodeIfPresent(String.self, forKey: .verificationCode)
-            $0.status = Status(rawValue: statusString)!
+            $0.status = TIStatus(rawValue: statusString)!
             $0.verificationType = FileChecksumHelper.VerificationType(rawValue: verificationTypeInt)!
             $0.validation = Validation(rawValue: validationType)!
             if let errorData = try container.decodeIfPresent(Data.self, forKey: .error) {
@@ -309,15 +309,15 @@ public class Task<TaskType>: NSObject, Codable {
 }
 
 
-extension Task {
+extension TITask {
     @discardableResult
-    public func progress(onMainQueue: Bool = true, handler: @escaping Handler<TaskType>) -> Self {
+    public func progress(onMainQueue: Bool = true, handler: @escaping TIHandler<TaskType>) -> Self {
         progressExecuter = Executer(onMainQueue: onMainQueue, handler: handler)
         return self
     }
 
     @discardableResult
-    public func success(onMainQueue: Bool = true, handler: @escaping Handler<TaskType>) -> Self {
+    public func success(onMainQueue: Bool = true, handler: @escaping TIHandler<TaskType>) -> Self {
         successExecuter = Executer(onMainQueue: onMainQueue, handler: handler)
         if status == .succeeded  && completionExecuter == nil{
             operationQueue.async {
@@ -329,7 +329,7 @@ extension Task {
     }
 
     @discardableResult
-    public func failure(onMainQueue: Bool = true, handler: @escaping Handler<TaskType>) -> Self {
+    public func failure(onMainQueue: Bool = true, handler: @escaping TIHandler<TaskType>) -> Self {
         failureExecuter = Executer(onMainQueue: onMainQueue, handler: handler)
         if completionExecuter == nil &&
             (status == .suspended ||
@@ -344,7 +344,7 @@ extension Task {
     }
     
     @discardableResult
-    public func completion(onMainQueue: Bool = true, handler: @escaping Handler<TaskType>) -> Self {
+    public func completion(onMainQueue: Bool = true, handler: @escaping TIHandler<TaskType>) -> Self {
         completionExecuter = Executer(onMainQueue: onMainQueue, handler: handler)
         if status == .suspended ||
             status == .canceled ||

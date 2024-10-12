@@ -26,7 +26,7 @@
 
 import UIKit
 
-public class DownloadTask: Task<DownloadTask> {
+public class TIDownloadTask: TITask<TIDownloadTask> {
     
     private enum CodingKeys: CodingKey {
         case resumeData
@@ -99,7 +99,7 @@ public class DownloadTask: Task<DownloadTask> {
     internal init(_ url: URL,
                   headers: [String: String]? = nil,
                   fileName: String? = nil,
-                  cache: Cache,
+                  cache: TICache,
                   operationQueue: DispatchQueue) {
         super.init(url,
                    headers: headers,
@@ -158,7 +158,7 @@ public class DownloadTask: Task<DownloadTask> {
     }
 
 
-    internal override func execute(_ executer: Executer<DownloadTask>?) {
+    internal override func execute(_ executer: Executer<TIDownloadTask>?) {
         executer?.execute(self)
     }
     
@@ -167,7 +167,7 @@ public class DownloadTask: Task<DownloadTask> {
 
 
 // MARK: - control
-extension DownloadTask {
+extension TIDownloadTask {
 
     internal func download() {
         cache.createDirectory()
@@ -247,7 +247,7 @@ extension DownloadTask {
     }
 
 
-    internal func suspend(onMainQueue: Bool = true, handler: Handler<DownloadTask>? = nil) {
+    internal func suspend(onMainQueue: Bool = true, handler: TIHandler<TIDownloadTask>? = nil) {
         guard status == .running || status == .waiting else { return }
         controlExecuter = Executer(onMainQueue: onMainQueue, handler: handler)
         if status == .running {
@@ -261,7 +261,7 @@ extension DownloadTask {
         }
     }
 
-    internal func cancel(onMainQueue: Bool = true, handler: Handler<DownloadTask>? = nil) {
+    internal func cancel(onMainQueue: Bool = true, handler: TIHandler<TIDownloadTask>? = nil) {
         guard status != .succeeded else { return }
         controlExecuter = Executer(onMainQueue: onMainQueue, handler: handler)
         if status == .running {
@@ -277,7 +277,7 @@ extension DownloadTask {
 
     
 
-    internal func remove(completely: Bool = false, onMainQueue: Bool = true, handler: Handler<DownloadTask>? = nil) {
+    internal func remove(completely: Bool = false, onMainQueue: Bool = true, handler: TIHandler<TIDownloadTask>? = nil) {
         isRemoveCompletely = completely
         controlExecuter = Executer(onMainQueue: onMainQueue, handler: handler)
         if status == .running {
@@ -330,7 +330,7 @@ extension DownloadTask {
 
 
 // MARK: - status handle
-extension DownloadTask {
+extension TIDownloadTask {
 
     private func didCancelOrRemove() {
         // 把预操作的状态改成完成操作的状态
@@ -412,12 +412,12 @@ extension DownloadTask {
 }
 
 // MARK: - closure
-extension DownloadTask {
+extension TIDownloadTask {
     @discardableResult
     public func validateFile(code: String,
                              type: FileChecksumHelper.VerificationType,
                              onMainQueue: Bool = true,
-                             handler: @escaping Handler<DownloadTask>) -> Self {
+                             handler: @escaping TIHandler<TIDownloadTask>) -> Self {
          operationQueue.async {
             let (verificationCode, verificationType) = self.protectedState.read {
                                                             ($0.verificationCode, $0.verificationType)
@@ -450,7 +450,7 @@ extension DownloadTask {
         } else {
             failureExecuter?.execute(self)
         }
-        NotificationCenter.default.postNotification(name: DownloadTask.didCompleteNotification, downloadTask: self)
+        NotificationCenter.default.postNotification(name: TIDownloadTask.didCompleteNotification, downloadTask: self)
     }
     
     private func executeControl() {
@@ -462,7 +462,7 @@ extension DownloadTask {
 
 
 // MARK: - KVO
-extension DownloadTask {
+extension TIDownloadTask {
     override public func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if let change = change, let newRequest = change[NSKeyValueChangeKey.newKey] as? URLRequest, let url = newRequest.url {
             currentURL = url
@@ -472,7 +472,7 @@ extension DownloadTask {
 }
 
 // MARK: - info
-extension DownloadTask {
+extension TIDownloadTask {
 
     internal func updateSpeedAndTimeRemaining() {
 
@@ -505,14 +505,14 @@ extension DownloadTask {
 }
 
 // MARK: - callback
-extension DownloadTask {
+extension TIDownloadTask {
     internal func didWriteData(downloadTask: URLSessionDownloadTask, bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
         progress.completedUnitCount = totalBytesWritten
         progress.totalUnitCount = totalBytesExpectedToWrite
         response = downloadTask.response as? HTTPURLResponse
         progressExecuter?.execute(self)
         manager?.updateProgress()
-        NotificationCenter.default.postNotification(name: DownloadTask.runningNotification, downloadTask: self)
+        NotificationCenter.default.postNotification(name: TIDownloadTask.runningNotification, downloadTask: self)
     }
     
     
@@ -574,21 +574,21 @@ extension DownloadTask {
 
 
 
-extension Array where Element == DownloadTask {
+extension Array where Element == TIDownloadTask {
     @discardableResult
-    public func progress(onMainQueue: Bool = true, handler: @escaping Handler<DownloadTask>) -> [Element] {
+    public func progress(onMainQueue: Bool = true, handler: @escaping TIHandler<TIDownloadTask>) -> [Element] {
         self.forEach { $0.progress(onMainQueue: onMainQueue, handler: handler) }
         return self
     }
 
     @discardableResult
-    public func success(onMainQueue: Bool = true, handler: @escaping Handler<DownloadTask>) -> [Element] {
+    public func success(onMainQueue: Bool = true, handler: @escaping TIHandler<TIDownloadTask>) -> [Element] {
         self.forEach { $0.success(onMainQueue: onMainQueue, handler: handler) }
         return self
     }
 
     @discardableResult
-    public func failure(onMainQueue: Bool = true, handler: @escaping Handler<DownloadTask>) -> [Element] {
+    public func failure(onMainQueue: Bool = true, handler: @escaping TIHandler<TIDownloadTask>) -> [Element] {
         self.forEach { $0.failure(onMainQueue: onMainQueue, handler: handler) }
         return self
     }
@@ -596,7 +596,7 @@ extension Array where Element == DownloadTask {
     public func validateFile(codes: [String],
                              type: FileChecksumHelper.VerificationType,
                              onMainQueue: Bool = true,
-                             handler: @escaping Handler<DownloadTask>) -> [Element] {
+                             handler: @escaping TIHandler<TIDownloadTask>) -> [Element] {
         for (index, task) in self.enumerated() {
             guard let code = codes.safeObject(at: index) else { continue }
             task.validateFile(code: code, type: type, onMainQueue: onMainQueue, handler: handler)

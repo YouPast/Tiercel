@@ -27,7 +27,7 @@
 import Foundation
 
 internal class SessionDelegate: NSObject {
-    internal weak var manager: SessionManager?
+    internal weak var manager: TISessionManager?
 
 }
 

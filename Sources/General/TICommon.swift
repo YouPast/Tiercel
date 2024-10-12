@@ -33,8 +33,8 @@ public enum LogOption {
 }
 
 public enum LogType {
-    case sessionManager(_ message: String, manager: SessionManager)
-    case downloadTask(_ message: String, task: DownloadTask)
+    case sessionManager(_ message: String, manager: TISessionManager)
+    case downloadTask(_ message: String, task: TIDownloadTask)
     case error(_ message: String, error: Error)
 }
 
@@ -46,7 +46,7 @@ public protocol Logable {
     func log(_ type: LogType)
 }
 
-public struct Logger: Logable {
+public struct TILogger: Logable {
     
     public let identifier: String
     
@@ -74,7 +74,7 @@ public struct Logger: Logable {
     }
 }
 
-public enum Status: String {
+public enum TIStatus: String {
     case waiting
     case running
     case suspended
